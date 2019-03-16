@@ -10,38 +10,38 @@ import (
 	"testing"
 )
 
-type mockedUserRepo struct {
+type userRepoMock struct {
 	saveError       error
 	findEmailResult *model.User
 	findTokenResult *model.User
 }
 
-func (r mockedUserRepo) Save(user *model.User) error {
+func (r userRepoMock) Save(user *model.User) error {
 	if r.saveError == nil {
 		user.Id = 1
 	}
 	return r.saveError
 }
 
-func (r mockedUserRepo) FindByToken(token string) *model.User {
+func (r userRepoMock) FindByToken(token string) *model.User {
 	return r.findTokenResult
 }
 
-func (r mockedUserRepo) FindByEmail(email string) *model.User {
+func (r userRepoMock) FindByEmail(email string) *model.User {
 	return r.findEmailResult
 }
 
-func createRepoMock(saveError error, findEmailResult *model.User, findTokenResult *model.User) repository.UserRepository {
-	result := &(mockedUserRepo{saveError: saveError, findEmailResult: findEmailResult, findTokenResult: findTokenResult})
+func createUserRepoMock(saveError error, findEmailResult *model.User, findTokenResult *model.User) repository.UserRepository {
+	result := &(userRepoMock{saveError: saveError, findEmailResult: findEmailResult, findTokenResult: findTokenResult})
 	return result
 }
 
-type mockedTokenGenerator struct {
+type tokenGeneratorMock struct {
 	tokens []string
 	next   int
 }
 
-func (g mockedTokenGenerator) getToken() (string, error) {
+func (g tokenGeneratorMock) getToken() (string, error) {
 	result := g.tokens[g.next]
 	if len(g.tokens) <= g.next {
 		return "", errors.New("error in token generation")
@@ -50,8 +50,8 @@ func (g mockedTokenGenerator) getToken() (string, error) {
 	return result, nil
 }
 
-func creatMockedTokenGenerator(tokens []string) mockedTokenGenerator {
-	return mockedTokenGenerator{tokens: tokens, next: 0}
+func creatMockedTokenGenerator(tokens []string) tokenGeneratorMock {
+	return tokenGeneratorMock{tokens: tokens, next: 0}
 }
 
 func Test_userServiceImpl_Register(t *testing.T) {
@@ -62,11 +62,11 @@ func Test_userServiceImpl_Register(t *testing.T) {
 	type args struct {
 		email string
 	}
-	successSaveRepo := createRepoMock(nil, nil, nil)
+	successSaveRepo := createUserRepoMock(nil, nil, nil)
 	existingEmail := "user_with@email.exists"
-	userExistsRepoMock := createRepoMock(nil, &model.User{}, nil)
+	userExistsRepoMock := createUserRepoMock(nil, &model.User{}, nil)
 	saveErrorText := "Error on "
-	saveWithErrorRepoMock := createRepoMock(errors.New(saveErrorText), nil, nil)
+	saveWithErrorRepoMock := createUserRepoMock(errors.New(saveErrorText), nil, nil)
 	tests := []struct {
 		name    string
 		fields  fields

@@ -1,5 +1,4 @@
 package err
 
-import "net/http"
-
-const UserAlreadyExistsCode = http.StatusBadRequest
+const UserAlreadyExistsCode = 400
+const UserNotFound = 404

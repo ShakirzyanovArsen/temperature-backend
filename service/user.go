@@ -1,9 +1,6 @@
 package service
 
 import (
-	"crypto/rand"
-	"crypto/sha1"
-	"encoding/hex"
 	"fmt"
 	"temperature-backend/model"
 	"temperature-backend/repository"
@@ -15,25 +12,8 @@ type UserService interface {
 }
 
 type userServiceImpl struct {
-	repo *repository.UserRepository
+	repo           *repository.UserRepository
 	tokenGenerator tokenGenerator
-}
-
-type tokenGenerator interface {
-	getToken() (string, error)
-}
-
-type userTokenGenerator struct {}
-
-func (userTokenGenerator) getToken() (string, error) {
-	b := make([]byte, 256)
-	_, e := rand.Read(b)
-	if e != nil {
-		return "", e
-	}
-	hash := sha1.New()
-	hash.Write(b)
-	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
 func (s userServiceImpl) Register(email string) (*model.User, *Error) {
@@ -62,6 +42,5 @@ func (s userServiceImpl) Register(email string) (*model.User, *Error) {
 }
 
 func NewUserService(userRepository *repository.UserRepository) UserService {
-	return userServiceImpl{repo: userRepository, tokenGenerator: userTokenGenerator{}}
+	return userServiceImpl{repo: userRepository, tokenGenerator: tokenGeneratorImpl{}}
 }
-
