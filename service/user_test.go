@@ -72,7 +72,7 @@ func Test_userServiceImpl_Register(t *testing.T) {
 		fields  fields
 		args    args
 		want    *model.User
-		wantErr *err.Error
+		wantErr *Error
 	}{
 		{
 			name:    "Success save",
@@ -86,14 +86,14 @@ func Test_userServiceImpl_Register(t *testing.T) {
 			fields:  fields{repo: &userExistsRepoMock, tokenGenerator: creatMockedTokenGenerator([]string{"123"})},
 			args:    args{email: existingEmail},
 			want:    nil,
-			wantErr: &err.Error{Code: err.UserAlreadyExistsCode, Msg: fmt.Sprintf("User with email %s already exists", existingEmail)},
+			wantErr: &Error{Code: err.UserAlreadyExistsCode, Msg: fmt.Sprintf("User with email %s already exists", existingEmail)},
 		},
 		{
 			name:    "Error on save",
 			fields:  fields{repo: &saveWithErrorRepoMock, tokenGenerator: creatMockedTokenGenerator([]string{"123"})},
 			args:    args{email: "test@test.ru"},
 			want:    nil,
-			wantErr: &err.Error{Code: err.UnexpectedError, Msg: saveErrorText},
+			wantErr: &Error{Code: UnexpectedError, Msg: saveErrorText},
 		},
 	}
 	for _, tt := range tests {

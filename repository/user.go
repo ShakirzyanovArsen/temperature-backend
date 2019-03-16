@@ -13,12 +13,12 @@ type UserRepository interface {
 }
 
 type inMemoryUserRepository struct {
-	mux sync.Mutex
-	users      *[]*model.User
-	sequence   int
+	mux      sync.Mutex
+	users    *[]*model.User
+	sequence int
 }
 
-func (repo inMemoryUserRepository) findById(id int) *model.User{
+func (repo inMemoryUserRepository) findById(id int) *model.User {
 	for _, u := range *repo.users {
 		if u.Id == id {
 			return u
@@ -35,15 +35,14 @@ func (repo inMemoryUserRepository) Save(user *model.User) error {
 		user.Id = repo.sequence
 		newUser := *user
 		*repo.users = append(*repo.users, &newUser)
-		return nil
 	} else {
 		userToUpdate := repo.findById(user.Id)
 		if userToUpdate == nil {
 			return errors.New(`can't find user to update`)
 		}
 		*userToUpdate = *user
-		return nil
 	}
+	return nil
 }
 
 func (repo inMemoryUserRepository) FindByToken(token string) *model.User {
