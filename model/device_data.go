@@ -1,6 +1,6 @@
 package model
 
-type DeviceIndicator struct {
+type DeviceData struct {
 	Id int
 	DeviceId int
 	Timestamp int64
