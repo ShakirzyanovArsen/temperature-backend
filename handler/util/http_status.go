@@ -6,8 +6,8 @@ import (
 )
 
 type HttpStatus struct {
-	Code int `json:"code"`
-	Msg string `json:"message"`
+	Code int    `json:"code"`
+	Msg  string `json:"message"`
 }
 
 func (e HttpStatus) ToString() string {

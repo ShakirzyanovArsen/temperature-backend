@@ -2,11 +2,11 @@ package middleware
 
 import (
 	"net/http"
-	"temperature-backend/util"
+	"temperature-backend/handler/util"
 )
 
 func Auth(next http.Handler) http.Handler {
-	return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			err := util.HttpStatus{Code: http.StatusUnauthorized, Msg: "Authorization token is empty or not present in request"}

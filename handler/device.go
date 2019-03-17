@@ -1,13 +1,9 @@
 package handler
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"net/http"
-	"temperature-backend/handler/handler_utils"
+	"temperature-backend/handler/util"
 	"temperature-backend/service"
-	"temperature-backend/util"
 )
 
 type DeviceHandler struct {
@@ -24,18 +20,9 @@ type registerDeviceResponse struct {
 }
 
 func (h DeviceHandler) RegisterDevice(w http.ResponseWriter, r *http.Request) {
-	reqBuf := new(bytes.Buffer)
-	_, err := reqBuf.ReadFrom(r.Body)
-	if err != nil {
-		util.HandleInternalError(w, err)
-		return
-	}
 	req := registerDeviceRequest{}
-	err = json.Unmarshal(reqBuf.Bytes(), &req)
-	strBody := string(reqBuf.Bytes())
-	fmt.Println(strBody)
+	err := util.ParseJsonBody(w, r, &req)
 	if err != nil {
-		util.HandleSerializingError(w, err)
 		return
 	}
 	newDevice, serviceError := (*h.service).Register(req.DeviceName, req.UserEmail)
@@ -44,7 +31,7 @@ func (h DeviceHandler) RegisterDevice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	resp := registerDeviceResponse{Token: newDevice.Token}
-	handler_utils.SetResponse(w, resp)
+	util.SetResponse(w, resp)
 }
 
 func NewDeviceHandler(service *service.DeviceService) DeviceHandler {

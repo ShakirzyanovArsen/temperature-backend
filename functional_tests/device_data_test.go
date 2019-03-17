@@ -8,35 +8,49 @@ import (
 	"testing"
 )
 
-func TestRegisterDevice(t *testing.T) {
+func TestPushData(t *testing.T) {
 	if testing.Short() {
-		t.Skip("Skipping test due to short mode")
+		t.Skip()
 	}
-	url := registerDeviceUrl
+	url := pushDataUrl
 	existingUserEmail := "test@test.ru"
-	tests := []TestStruct{
-		{
-			Name:               "success",
-			RequestBody:        fmt.Sprintf(`{"user_email": "%s", "device_name": "device1"}`, existingUserEmail),
-			ExpectedStatusCode: http.StatusCreated,
-			ExistsFields:       []string{"token"},
-		},
-		{
-			Name:               "user does not exists",
-			RequestBody:        `{"user_email": "user_not@exist.test", "device_name": "device1"}`,
-			ExpectedStatusCode: http.StatusNotFound,
-			ExistsFields:       []string{"code", "message"},
-		},
-	}
 	go setupServer()
 	err := createUser(existingUserEmail)
 	if err != nil {
 		t.Errorf("error while user create: %s", err)
 	}
+	validToken, err := registerDevice(existingUserEmail, "device1")
+	if err != nil {
+		t.Errorf("error while device register: %s", err)
+	}
+	validTokenMap := map[string]string{}
+	validTokenMap["Authorization"] = validToken
+	invalidTokenMap := map[string]string{}
+	invalidTokenMap["Authorization"] = "invalidToken"
+	validDateTime := "2019-03-17T21:08:00+05:00"
+	tests := []TestStruct{
+		{
+			Name:               "success",
+			RequestBody:        fmt.Sprintf(`{"date_time": "%s","temperature": 33.8}`, validDateTime),
+			Headers:            validTokenMap,
+			ExpectedStatusCode: http.StatusCreated,
+			ExistsFields:       []string{"saved"},
+		},
+		{
+			Name:               "wrong auth token",
+			RequestBody:        fmt.Sprintf(`{"date_time": "%s","temperature": 33.8}`, validDateTime),
+			Headers:            invalidTokenMap,
+			ExpectedStatusCode: http.StatusUnauthorized,
+			ExistsFields:       []string{"code", "message"},
+		},
+	}
 	for _, tt := range tests {
 		t.Run(tt.Name, func(t *testing.T) {
 			reader := strings.NewReader(tt.RequestBody)
 			req, err := http.NewRequest(http.MethodPost, url, reader)
+			for header, val := range tt.Headers {
+				req.Header.Set(header, val)
+			}
 			res, err := http.DefaultClient.Do(req)
 			if err != nil {
 				t.Error(err)
@@ -54,4 +68,5 @@ func TestRegisterDevice(t *testing.T) {
 			}
 		})
 	}
+
 }

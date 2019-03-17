@@ -32,3 +32,7 @@ func (s deviceDataServiceImpl) Push(token string, dataTime string, temperature f
 	}
 	return nil
 }
+
+func NewDeviceDataService(deviceRepo *repository.DeviceRepository, deviceDataRepo *repository.DeviceDataRepository) DeviceDataService {
+	return deviceDataServiceImpl{deviceRepo: deviceRepo, deviceDataRepo: deviceDataRepo}
+}

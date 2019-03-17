@@ -1,12 +1,9 @@
 package handler
 
 import (
-	"bytes"
-	"encoding/json"
 	"net/http"
-	"temperature-backend/handler/handler_utils"
+	"temperature-backend/handler/util"
 	"temperature-backend/service"
-	"temperature-backend/util"
 )
 
 type registerUserRequest struct {
@@ -22,16 +19,9 @@ type UserHandler struct {
 }
 
 func (h UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
-	reqBuf := new(bytes.Buffer)
-	_, err := reqBuf.ReadFrom(r.Body)
-	if err != nil {
-		util.HandleInternalError(w, err)
-		return
-	}
 	req := registerUserRequest{}
-	err = json.Unmarshal(reqBuf.Bytes(), &req)
+	err := util.ParseJsonBody(w, r, &req)
 	if err != nil {
-		util.HandleSerializingError(w, err)
 		return
 	}
 	newUser, serviceError := (*h.service).Register(req.Email)
@@ -40,7 +30,7 @@ func (h UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	resp := registerUserResponse{Token: newUser.Token}
-	handler_utils.SetResponse(w, resp)
+	util.SetResponse(w, resp)
 }
 
 func NewUserHandler(userService *service.UserService) UserHandler {
