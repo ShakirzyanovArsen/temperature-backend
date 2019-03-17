@@ -9,6 +9,16 @@ import (
 )
 
 func Setup() *http.ServeMux {
+	userHandler, deviceHandler, deviceDataHandler := initServices()
+
+	mux := http.NewServeMux()
+	mux.Handle("/user/register", m.Post(http.HandlerFunc(userHandler.RegisterUser)))
+	mux.Handle("/device/register", m.Post(http.HandlerFunc(deviceHandler.RegisterDevice)))
+	mux.Handle("/device/data", m.Post(m.Auth(http.HandlerFunc(deviceDataHandler.PushData))))
+	return mux
+}
+
+func initServices() (handler.UserHandler, handler.DeviceHandler, handler.DeviceDataHandler) {
 	userRepo := repository.NewUserRepository()
 	deviceRepo := repository.NewDeviceRepository()
 	deviceDataRepo := repository.NewDeviceDataRepository()
@@ -21,9 +31,5 @@ func Setup() *http.ServeMux {
 	deviceHandler := handler.NewDeviceHandler(&deviceService)
 	deviceDataHandler := handler.NewDeviceDataHandler(&deviceDataService)
 
-	mux := http.NewServeMux()
-	mux.Handle("/user/register", m.Post(http.HandlerFunc(userHandler.RegisterUser)))
-	mux.Handle("/device/register", m.Post(http.HandlerFunc(deviceHandler.RegisterDevice)))
-	mux.Handle("/device/data", m.Post(http.HandlerFunc(deviceDataHandler.PushData)))
-	return mux
+	return userHandler, deviceHandler, deviceDataHandler
 }
