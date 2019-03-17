@@ -14,9 +14,10 @@ git:
   depth: 1
 install: true
 before_script:
-  - cp -r $GOPATH/src/github.com/ShakirzyanovArsen/temperature-backend $GOPATH/
+  - cp -r $GOPATH/src/github.com/ShakirzyanovArsen/temperature-backend $GOPATH/src
 
 script:
+  - ls $GOPATH/src
   - go build
   - go test -v ./...
 
