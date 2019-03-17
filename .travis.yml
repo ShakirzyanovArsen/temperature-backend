@@ -1,0 +1,19 @@
+sudo: false
+
+language: go
+
+env:
+  - GO111MODULE=on
+go:
+  - 1.11.x
+
+notifications:
+  email: false
+
+git:
+  depth: 1
+
+script:
+  - golangci-lint run
+  - go test -v -race ./..
+
