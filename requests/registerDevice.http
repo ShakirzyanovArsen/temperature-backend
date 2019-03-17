@@ -1,0 +1,13 @@
+POST {{host}}:{{port}}/device/register
+Content-Type: application/json
+
+{
+  "device_name": "device1",
+  "user_email": "{{user_email}}"
+}
+
+> {%
+ client.global.set("device_token", response.body.token)
+ %}
+
+###

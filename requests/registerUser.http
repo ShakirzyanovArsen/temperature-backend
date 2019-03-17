@@ -1,8 +1,11 @@
-POST localhost:8080/user/register
+POST {{host}}:{{port}}/user/register
 Content-Type: application/json
 
 {
-"email": "test@test.ru"
+  "email": "{{user_email}}"
 }
+> {%
+ client.global.set("user_token", response.body.token)
+ %}
 
 ###

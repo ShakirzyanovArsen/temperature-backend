@@ -23,6 +23,6 @@ func HandleServiceError(w http.ResponseWriter, e service.Error) {
 
 func HandleSerializingError(w http.ResponseWriter, err error) {
 	httpErr := HttpStatus{Code: http.StatusBadRequest, Msg: "Cannot marshal/unmarshal"}
-	log.Print("Error occurred while unmarshaling", err)
+	log.Print("Error occurred while unmarshaling.", err)
 	http.Error(w, httpErr.ToString(), httpErr.Code)
 }

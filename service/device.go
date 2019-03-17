@@ -41,3 +41,7 @@ func (s deviceServiceImpl) Register(deviceName string, userEmail string) (*model
 	}
 	return &device, nil
 }
+
+func NewDeviceService(userRepo *repository.UserRepository, deviceRepo *repository.DeviceRepository) DeviceService {
+	return deviceServiceImpl{deviceRepo: deviceRepo, userRepo: userRepo, tokenGenerator: tokenGeneratorImpl{}}
+}

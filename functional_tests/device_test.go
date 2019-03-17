@@ -8,26 +8,31 @@ import (
 	"testing"
 )
 
-func TestRegisterUser(t *testing.T) {
+func TestRegisterDevice(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping test due to short mode")
 	}
-	url := createUserUrl
+	url := createDeviceUrl
+	existingUserEmail := "test@test.ru"
 	tests := []TestStruct{
 		{
 			Name:               "success",
-			RequestBody:        `{"email": "test@test"}`,
+			RequestBody:        fmt.Sprintf(`{"user_email": "%s", "device_name": "device1"}`, existingUserEmail),
 			ExpectedStatusCode: http.StatusCreated,
 			ExistsFields:       []string{"token"},
 		},
 		{
-			Name:               "mail already in use",
-			RequestBody:        `{"email": "test@test"}`,
-			ExpectedStatusCode: http.StatusBadRequest,
+			Name:               "user does not exists",
+			RequestBody:        `{"user_email": "user_not@exist.test", "device_name": "device1"}`,
+			ExpectedStatusCode: http.StatusNotFound,
 			ExistsFields:       []string{"code", "message"},
 		},
 	}
 	go setupServer()
+	err := createUser(existingUserEmail)
+	if err != nil {
+		t.Errorf("error while user create: %s", err)
+	}
 	for _, tt := range tests {
 		t.Run(tt.Name, func(t *testing.T) {
 			reader := strings.NewReader(tt.RequestBody)

@@ -3,14 +3,21 @@ package server
 import (
 	"net/http"
 	"temperature-backend/handler"
-	"temperature-backend/middleware"
+	m "temperature-backend/middleware"
 	"temperature-backend/repository"
 	"temperature-backend/service"
 )
 
 func Setup() {
 	userRepo := repository.NewUserRepository()
+	deviceRepo := repository.NewDeviceRepository()
+
 	userService := service.NewUserService(&userRepo)
+	deviceService := service.NewDeviceService(&userRepo, &deviceRepo)
+
 	userHandler := handler.NewUserHandler(&userService)
-	http.Handle("/user/register", middleware.Post(http.HandlerFunc(userHandler.RegisterUser)))
+	deviceHandler := handler.NewDeviceHandler(&deviceService)
+
+	http.Handle("/user/register", m.Post(http.HandlerFunc(userHandler.RegisterUser)))
+	http.Handle("/device/register", m.Post(http.HandlerFunc(deviceHandler.RegisterDevice)))
 }

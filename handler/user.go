@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
+	"temperature-backend/handler/handler_utils"
 	"temperature-backend/service"
 	"temperature-backend/util"
 )
@@ -39,17 +40,7 @@ func (h UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	resp := registerUserResponse{Token: newUser.Token}
-	respBody, err := json.Marshal(resp)
-	if err != nil {
-		util.HandleInternalError(w, err)
-		return
-	}
-	w.WriteHeader(http.StatusCreated)
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(respBody)
-	if err != nil {
-		util.HandleInternalError(w, err)
-	}
+	handler_utils.SetResponse(w, resp)
 }
 
 func NewUserHandler(userService *service.UserService) UserHandler {
