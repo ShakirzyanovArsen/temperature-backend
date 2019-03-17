@@ -16,5 +16,5 @@ install: true
 
 script:
   - golangci-lint run
-  - go test -v -race ./..
+  - go test -v ./...
 
