@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"temperature-backend/model"
 	"temperature-backend/repository"
-	"temperature-backend/service/err"
 )
 
 type UserService interface {
@@ -20,7 +19,7 @@ func (s userServiceImpl) Register(email string) (*model.User, *Error) {
 	userByEmail := (*s.repo).FindByEmail(email)
 	if userByEmail != nil {
 		msg := fmt.Sprintf("User with email %s already exists", email)
-		return nil, &Error{Code: err.UserAlreadyExistsCode, Msg: msg}
+		return nil, &Error{Code: EntityAlreadyExists, Msg: msg}
 	}
 	token := ""
 	for {

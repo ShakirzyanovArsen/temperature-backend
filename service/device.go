@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"temperature-backend/model"
 	"temperature-backend/repository"
-	"temperature-backend/service/err"
 )
 
 type DeviceService interface {
@@ -21,7 +20,7 @@ func (s deviceServiceImpl) Register(deviceName string, userEmail string) (*model
 	user := (*s.userRepo).FindByEmail(userEmail)
 	if user == nil {
 		msg := fmt.Sprintf("user with email %s not found", userEmail)
-		return nil, &Error{Code: err.UserNotFound, Msg: msg}
+		return nil, &Error{Code: EntityNotFound, Msg: msg}
 	}
 	token := ""
 	for {

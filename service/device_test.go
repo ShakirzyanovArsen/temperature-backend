@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"temperature-backend/model"
 	"temperature-backend/repository"
-	"temperature-backend/service/err"
 	"testing"
 )
 
@@ -59,7 +58,7 @@ func Test_deviceServiceImpl_Register(t *testing.T) {
 		wantErr *Error
 	}{
 		{
-			name: "succes register",
+			name: "success register",
 			fields: fields{
 				deviceRepo:     &successDeviceRepo,
 				userRepo:       &findByEmailUserRepo,
@@ -78,7 +77,7 @@ func Test_deviceServiceImpl_Register(t *testing.T) {
 			},
 			args:    args{deviceName: "device1", userEmail: "test@test.ru"},
 			want:    nil,
-			wantErr: &Error{Code: err.UserNotFound, Msg: "user with email test@test.ru not found"},
+			wantErr: &Error{Code: EntityNotFound, Msg: "user with email test@test.ru not found"},
 		},
 	}
 	for _, tt := range tests {

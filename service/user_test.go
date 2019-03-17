@@ -6,7 +6,6 @@ import (
 	"reflect"
 	"temperature-backend/model"
 	"temperature-backend/repository"
-	"temperature-backend/service/err"
 	"testing"
 )
 
@@ -86,7 +85,7 @@ func Test_userServiceImpl_Register(t *testing.T) {
 			fields:  fields{repo: &userExistsRepoMock, tokenGenerator: creatMockedTokenGenerator([]string{"123"})},
 			args:    args{email: existingEmail},
 			want:    nil,
-			wantErr: &Error{Code: err.UserAlreadyExistsCode, Msg: fmt.Sprintf("User with email %s already exists", existingEmail)},
+			wantErr: &Error{Code: EntityAlreadyExists, Msg: fmt.Sprintf("User with email %s already exists", existingEmail)},
 		},
 		{
 			name:    "Error on save",
