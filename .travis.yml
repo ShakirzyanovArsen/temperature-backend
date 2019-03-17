@@ -15,6 +15,6 @@ git:
 install: true
 
 script:
-  - golangci-lint run
+  - go build
   - go test -v ./...
 
