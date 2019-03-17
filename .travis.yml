@@ -12,6 +12,7 @@ notifications:
 
 git:
   depth: 1
+install: true
 
 script:
   - golangci-lint run
