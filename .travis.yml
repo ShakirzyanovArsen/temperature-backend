@@ -1,7 +1,7 @@
 sudo: false
 
 language: go
-
+go_import_path: github.com/ShakirzyanovArsen/temperature-backend
 env:
   - GO111MODULE=off
 go:
@@ -15,7 +15,6 @@ git:
 install: true
 
 script:
-  - ls $GOPATH/src
   - go build
   - go test -v ./...
 
