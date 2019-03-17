@@ -13,6 +13,8 @@ notifications:
 git:
   depth: 1
 install: true
+before_script:
+  - cp -r $GOPATH/github.com/ShakirzyanovArsen/temperature-backend $GOPATH/
 
 script:
   - go build
