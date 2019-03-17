@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-
 func Test_inMemoryDeviceRepo_save(t *testing.T) {
 	repo := NewDeviceRepository().(inMemoryDeviceRepository)
 	device := model.Device{UserId: 1, Name: "device1", Token: "token"}
@@ -22,27 +21,29 @@ func Test_inMemoryDeviceRepo_save_update(t *testing.T) {
 	err := repo.Save(&device)
 	test_utils.UnexpectedError(t, err)
 	updatedUserId := 2
-	device.UserId= updatedUserId
+	device.UserId = updatedUserId
 	err = repo.Save(&device)
 	test_utils.UnexpectedError(t, err)
 	test_utils.AssertInt(t, updatedUserId, (*(repo.devices))[0].UserId)
 }
 
-func Test_inMemoryDeviceRepository_update_not_exists(t *testing.T)  {
+func Test_inMemoryDeviceRepository_update_not_exists(t *testing.T) {
 	repo := NewDeviceRepository().(inMemoryDeviceRepository)
-	device := model.Device{Id:1, UserId: 1, Name: "device1", Token: "token"}
+	device := model.Device{Id: 1, UserId: 1, Name: "device1", Token: "token"}
 	err := repo.Save(&device)
 	test_utils.AssertError(t, err)
 }
 func Test_inMemoryDeviceRepo_findByUserId(t *testing.T) {
 	repo := NewDeviceRepository().(inMemoryDeviceRepository)
-	device := model.Device{UserId: 1, Name: "device1", Token: "token"}
-	err := repo.Save(&device)
+	device1 := model.Device{UserId: 1, Name: "device1", Token: "token1"}
+	device2 := model.Device{UserId: 1, Name: "device2", Token: "token2"}
+	err := repo.Save(&device1)
+	err = repo.Save(&device2)
 	test_utils.UnexpectedError(t, err)
 	findedUser := repo.FindByUserId(1)
 	test_utils.AssertStruct(t, &model.Device{UserId: 1, Name: "device1", Token: "token"}, findedUser)
 	findedUser = repo.FindByUserId(2)
-	test_utils.AssertStruct(t, nil, findedUser)
+	test_utils.AssertInt(t, 0, len(findedUser))
 }
 
 func Test_inMemoryDeviceRepo_FindByToken(t *testing.T) {
@@ -51,7 +52,7 @@ func Test_inMemoryDeviceRepo_FindByToken(t *testing.T) {
 	err := repo.Save(&device)
 	test_utils.UnexpectedError(t, err)
 	findedUser := repo.FindByToken("token")
-	test_utils.AssertStruct(t, model.Device{UserId: 1, Name: "device1", Token: "token"}, findedUser)
+	test_utils.AssertStruct(t, []model.Device{{UserId: 1, Name: "device1", Token: "token1"}, {UserId: 1, Name: "device2", Token: "token2"}}, findedUser)
 	findedUser = repo.FindByToken("123")
 	test_utils.AssertStruct(t, nil, findedUser)
 }

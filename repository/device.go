@@ -8,7 +8,7 @@ import (
 
 type DeviceRepository interface {
 	Save(device *model.Device) error
-	FindByUserId(userId int) *model.Device
+	FindByUserId(userId int) []model.Device
 	FindByToken(token string) *model.Device
 }
 
@@ -45,13 +45,14 @@ func (repo inMemoryDeviceRepository) Save(device *model.Device) error {
 	return nil
 }
 
-func (repo inMemoryDeviceRepository) FindByUserId(userId int) *model.Device {
+func (repo inMemoryDeviceRepository) FindByUserId(userId int) []model.Device {
+	var result []model.Device
 	for _, device := range *repo.devices {
 		if device.UserId == userId {
-			return device
+			result = append(result, *device)
 		}
 	}
-	return nil
+	return result
 }
 
 func (repo inMemoryDeviceRepository) FindByToken(token string) *model.Device {

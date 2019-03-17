@@ -8,6 +8,7 @@ import (
 func UnexpectedError(t *testing.T, err error) {
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
+		t.FailNow()
 	}
 }
 func AssertError(t *testing.T, err error) {
@@ -27,7 +28,7 @@ func AssertInt(t *testing.T, expected int, actual int) {
 	}
 }
 
-func AssertNotNil(t *testing.T, ptr interface{}){
+func AssertNotNil(t *testing.T, ptr interface{}) {
 	if ptr == nil {
 		t.Errorf("expected not nil pointer")
 	}
@@ -38,4 +39,3 @@ func AssertStruct(t *testing.T, expected interface{}, actual interface{}) {
 		t.Errorf("expected struct: %v, actual: %v", expected, actual)
 	}
 }
-
