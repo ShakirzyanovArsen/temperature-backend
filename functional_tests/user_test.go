@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func checkFieldsExists(body []byte, fields []string) (string, error){
+func checkFieldsExists(body []byte, fields []string) (string, error) {
 	var objmap map[string]*json.RawMessage
 	err := json.Unmarshal(body, &objmap)
 	if err != nil {
@@ -24,25 +24,28 @@ func checkFieldsExists(body []byte, fields []string) (string, error){
 	return "", nil
 }
 
-func setupServer () {
+func setupServer() {
 	server.Setup()
 	http.ListenAndServe(":8080", nil)
 }
 
 func TestRegisterUser(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping test due to short mode")
+	}
 	url := "http://localhost:8080/user/register"
 	tests := []TestStruct{
 		{
 			Name:               "success",
 			RequestBody:        `{"email": "test@test"}`,
 			ExpectedStatusCode: http.StatusCreated,
-			ExistsFields: []string{"token"},
+			ExistsFields:       []string{"token"},
 		},
 		{
 			Name:               "mail already in use",
 			RequestBody:        `{"email": "test@test"}`,
 			ExpectedStatusCode: http.StatusBadRequest,
-			ExistsFields: []string{"code", "message"},
+			ExistsFields:       []string{"code", "message"},
 		},
 	}
 	go setupServer()
