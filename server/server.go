@@ -8,7 +8,7 @@ import (
 	"temperature-backend/service"
 )
 
-func Setup() {
+func Setup() *http.ServeMux {
 	userRepo := repository.NewUserRepository()
 	deviceRepo := repository.NewDeviceRepository()
 
@@ -18,6 +18,8 @@ func Setup() {
 	userHandler := handler.NewUserHandler(&userService)
 	deviceHandler := handler.NewDeviceHandler(&deviceService)
 
-	http.Handle("/user/register", m.Post(http.HandlerFunc(userHandler.RegisterUser)))
-	http.Handle("/device/register", m.Post(http.HandlerFunc(deviceHandler.RegisterDevice)))
+	mux := http.NewServeMux()
+	mux.Handle("/user/register", m.Post(http.HandlerFunc(userHandler.RegisterUser)))
+	mux.Handle("/device/register", m.Post(http.HandlerFunc(deviceHandler.RegisterDevice)))
+	return mux
 }

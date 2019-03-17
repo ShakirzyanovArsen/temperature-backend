@@ -33,6 +33,6 @@ func createUser(email string) error {
 }
 
 func setupServer() {
-	server.Setup()
-	http.ListenAndServe(":8080", nil)
+	mux := server.Setup()
+	http.ListenAndServe(":8080", mux)
 }

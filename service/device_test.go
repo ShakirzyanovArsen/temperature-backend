@@ -22,8 +22,8 @@ func (r deviceRepoMock) Save(device *model.Device) error {
 	return r.saveError
 }
 
-func (r deviceRepoMock) FindByUserId(userId int) *model.Device {
-	return r.findByUserIdResult
+func (r deviceRepoMock) FindByUserId(userId int) []model.Device {
+	return []model.Device{*r.findByUserIdResult}
 }
 
 func (r deviceRepoMock) FindByToken(token string) *model.Device {
