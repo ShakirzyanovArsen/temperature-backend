@@ -17,7 +17,7 @@ before_script:
   - cp -r $GOPATH/src/github.com/ShakirzyanovArsen/temperature-backend $GOPATH/src
 
 script:
-  - ls $GOPATH/src
+  - cd $GOPATH/src/temperature-backend
   - go build
   - go test -v ./...
 
