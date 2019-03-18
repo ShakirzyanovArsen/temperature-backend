@@ -24,7 +24,7 @@ func initServices() (handler.UserHandler, handler.DeviceHandler, handler.DeviceD
 	deviceDataRepo := repository.NewDeviceDataRepository()
 
 	userService := service.NewUserService(&userRepo)
-	deviceService := service.NewDeviceService(&userRepo, &deviceRepo)
+	deviceService := service.NewDeviceService(&userRepo, &deviceRepo, &deviceDataRepo)
 	deviceDataService := service.NewDeviceDataService(&deviceRepo, &deviceDataRepo)
 
 	userHandler := handler.NewUserHandler(&userService)
