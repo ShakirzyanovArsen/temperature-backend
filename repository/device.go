@@ -15,7 +15,7 @@ type DeviceRepository interface {
 type inMemoryDeviceRepository struct {
 	mux      sync.Mutex
 	devices  *[]*model.Device
-	sequence int
+	sequence *seq
 }
 
 func (repo inMemoryDeviceRepository) findById(id int) *model.Device {
@@ -31,8 +31,8 @@ func (repo inMemoryDeviceRepository) Save(device *model.Device) error {
 	repo.mux.Lock()
 	defer repo.mux.Unlock()
 	if device.Id == 0 {
-		repo.sequence++
-		device.Id = repo.sequence
+		repo.sequence.val++
+		device.Id = repo.sequence.val
 		newDevice := *device
 		*repo.devices = append(*repo.devices, &newDevice)
 	} else {
@@ -66,5 +66,5 @@ func (repo inMemoryDeviceRepository) FindByToken(token string) *model.Device {
 
 func NewDeviceRepository() DeviceRepository {
 	devices := new([]*model.Device)
-	return inMemoryDeviceRepository{devices: devices}
+	return inMemoryDeviceRepository{devices: devices, sequence: new(seq)}
 }

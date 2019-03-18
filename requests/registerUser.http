@@ -2,7 +2,7 @@ POST {{host}}:{{port}}/user/register
 Content-Type: application/json
 
 {
-  "email": "{{user_email}}"
+  "email": "dasda@dasda.t4"
 }
 > {%
  client.global.set("user_token", response.body.token)

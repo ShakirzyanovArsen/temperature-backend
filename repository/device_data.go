@@ -14,7 +14,7 @@ type DeviceDataRepository interface {
 type inMemoryDeviceDataRepo struct {
 	mux      sync.Mutex
 	data     map[int][]*model.DeviceData
-	sequence int
+	sequence *seq
 }
 
 func (r inMemoryDeviceDataRepo) Save(deviceData *model.DeviceData) error {
@@ -23,11 +23,11 @@ func (r inMemoryDeviceDataRepo) Save(deviceData *model.DeviceData) error {
 	if deviceData.Id != 0 {
 		return errors.New("deviceData.id is already set")
 	}
-	r.sequence++
-	deviceData.Id = r.sequence
+	r.sequence.val++
+	deviceData.Id = r.sequence.val
 	newData := *deviceData
-	r.data[deviceData.DeviceId] = append(r.data[deviceData.Id], &newData)
-	sort.Slice(r.data[deviceData.DeviceId][:], func(i, j int) bool {
+	r.data[deviceData.DeviceId] = append(r.data[deviceData.DeviceId], &newData)
+	sort.Slice(r.data[deviceData.DeviceId], func(i, j int) bool {
 		return r.data[deviceData.DeviceId][i].Timestamp < r.data[deviceData.DeviceId][j].Timestamp
 	})
 	return nil
@@ -48,5 +48,5 @@ func (r inMemoryDeviceDataRepo) FindByDeviceID(deviceId int) []model.DeviceData 
 
 func NewDeviceDataRepository() DeviceDataRepository {
 	data := make(map[int][]*model.DeviceData, 0)
-	return inMemoryDeviceDataRepo{data: data, sequence: 0}
+	return inMemoryDeviceDataRepo{data: data, sequence: new(seq)}
 }

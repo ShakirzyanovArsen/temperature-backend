@@ -66,6 +66,6 @@ func Test_inMemoryUserRepository_FIndByEmail(t *testing.T) {
 
 func TestNewUserRepository(t *testing.T) {
 	repo := NewUserRepository().(inMemoryUserRepository)
-	test_utils.AssertInt(t, 0, repo.sequence)
+	test_utils.AssertInt(t, 0, repo.sequence.val)
 	test_utils.AssertNotNil(t, repo.users)
 }

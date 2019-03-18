@@ -15,7 +15,7 @@ type UserRepository interface {
 type inMemoryUserRepository struct {
 	mux      sync.Mutex
 	users    *[]*model.User
-	sequence int
+	sequence *seq
 }
 
 func (repo inMemoryUserRepository) findById(id int) *model.User {
@@ -31,8 +31,8 @@ func (repo inMemoryUserRepository) Save(user *model.User) error {
 	repo.mux.Lock()
 	defer repo.mux.Unlock()
 	if user.Id == 0 {
-		repo.sequence++
-		user.Id = repo.sequence
+		repo.sequence.val++
+		user.Id = repo.sequence.val
 		newUser := *user
 		*repo.users = append(*repo.users, &newUser)
 	} else {
@@ -67,6 +67,6 @@ func (repo inMemoryUserRepository) FindByEmail(email string) *model.User {
 
 func NewUserRepository() UserRepository {
 	users := new([]*model.User)
-	repo := inMemoryUserRepository{users: users, sequence: 0}
+	repo := inMemoryUserRepository{users: users, sequence: new(seq)}
 	return repo
 }

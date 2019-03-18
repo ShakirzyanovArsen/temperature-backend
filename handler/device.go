@@ -34,6 +34,16 @@ func (h DeviceHandler) RegisterDevice(w http.ResponseWriter, r *http.Request) {
 	util.SetResponse(w, resp)
 }
 
+func (h DeviceHandler) GetDeviceList(w http.ResponseWriter, r *http.Request) {
+	token := r.Header.Get("Authorization")
+	deviceListView, e := (*h.service).GetList(token)
+	if e != nil {
+		util.HandleServiceError(w, *e)
+		return
+	}
+	util.SetResponse(w, deviceListView)
+}
+
 func NewDeviceHandler(service *service.DeviceService) DeviceHandler {
 	return DeviceHandler{service: service}
 }

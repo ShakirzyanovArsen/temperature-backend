@@ -59,6 +59,6 @@ func Test_inMemoryDeviceRepo_FindByToken(t *testing.T) {
 
 func TestNewRepository(t *testing.T) {
 	repo := NewDeviceRepository().(inMemoryDeviceRepository)
-	test_utils.AssertInt(t, 0, repo.sequence)
+	test_utils.AssertInt(t, 0, repo.sequence.val)
 	test_utils.AssertNotNil(t, repo.devices)
 }
