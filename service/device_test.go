@@ -7,6 +7,7 @@ import (
 	"temperature-backend/repository"
 	"temperature-backend/view"
 	"testing"
+	"time"
 )
 
 type deviceRepoMock struct {
@@ -133,7 +134,7 @@ func Test_deviceServiceImpl_GetList(t *testing.T) {
 			args:   args{token: validToken},
 			want: view.DeviceListView{
 				Devices: []view.DeviceListItem{
-					{DeviceId: 2, DeviceName: "deviceName1", LastDataTime: "2019-03-19T03:00:00+05:00"},
+					{DeviceId: 2, DeviceName: "deviceName1", LastDataTime: time.Unix(1552946400, 0).Format(time.RFC3339)},
 				},
 			},
 			wantE: nil,
