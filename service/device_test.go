@@ -165,12 +165,12 @@ func Test_deviceServiceImpl_GetList(t *testing.T) {
 				deviceDataRepo: tt.fields.deviceDataRepo,
 				tokenGenerator: tt.fields.tokenGenerator,
 			}
-			got, got1 := s.GetList(tt.args.token)
+			got, gotE := s.GetList(tt.args.token)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("deviceServiceImpl.GetList() got = %v, want %v", got, tt.want)
 			}
-			if !reflect.DeepEqual(got1, tt.wantE) {
-				t.Errorf("deviceServiceImpl.GetList() got1 = %v, want %v", got1, tt.wantE)
+			if !reflect.DeepEqual(gotE, tt.wantE) {
+				t.Errorf("deviceServiceImpl.GetList() gotE = %v, want %v", gotE, tt.wantE)
 			}
 		})
 	}
@@ -209,8 +209,8 @@ func Test_deviceServiceImpl_GetDataList(t *testing.T) {
 			fields: fields{deviceRepo: &successDeviceRepoMock, userRepo: &successUserRepoMock, deviceDataRepo: &successDataRepoMock},
 			args:   args{token: validToken, id: 2},
 			want: view.DeviceDataView{Data: []view.DeviceDataItem{
-				{DateTime: "2019-03-19T02:00:00+05:00", Temperature: 30.},
-				{DateTime: "2019-03-19T03:00:00+05:00", Temperature: 20.},
+				{DateTime: time.Unix(1552942800, 0).Format(time.RFC3339), Temperature: 30.},
+				{DateTime: time.Unix(1552946400, 0).Format(time.RFC3339), Temperature: 20.},
 			}},
 			wantE: nil,
 		},
