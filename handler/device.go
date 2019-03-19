@@ -2,6 +2,8 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
+	"strings"
 	"temperature-backend/handler/util"
 	"temperature-backend/service"
 )
@@ -42,6 +44,21 @@ func (h DeviceHandler) GetDeviceList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	util.SetResponse(w, deviceListView, http.StatusOK)
+}
+
+func (h DeviceHandler) GetDataList(w http.ResponseWriter, r *http.Request) {
+	token := r.Header.Get("Authorization")
+	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/device/"))
+	if err != nil {
+		util.HandleResourceNotFound(w)
+		return
+	}
+	view, e := (*h.service).GetDataList(token, id)
+	if e != nil {
+		util.HandleServiceError(w, *e)
+		return
+	}
+	util.SetResponse(w, view, http.StatusOK)
 }
 
 func NewDeviceHandler(service *service.DeviceService) DeviceHandler {

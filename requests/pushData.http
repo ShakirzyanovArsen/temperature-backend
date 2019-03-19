@@ -1,10 +1,10 @@
 POST {{host}}:{{port}}/device/data
 Content-Type: application/json
-Authorization: 3ab7d7f6ab16e2d74a094171ad9900f165d02bca
+Authorization: a77e4288e7d89d9518e85ad2f9c5ab5627164532
 
 {
-  "date_time": "2019-03-17T21:08:00+05:00",
-  "temperature": 33.8
+  "date_time": "2019-03-16T21:08:00+05:00",
+  "temperature": 45
 }
 
 ###

@@ -1,10 +1,10 @@
 package view
 
 type DeviceDataItem struct {
-	DateTime    string
-	Temperature float64
+	DateTime    string  `json:"date_time"`
+	Temperature float64 `json:"temperature"`
 }
 
 type DeviceDataView struct {
-	Data []DeviceDataItem
+	Data []DeviceDataItem `json:"data"`
 }

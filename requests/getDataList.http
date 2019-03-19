@@ -1,0 +1,4 @@
+GET {{host}}:{{port}}/device/1
+Authorization: 942e3374feab11e8a8145dba06b1fcfc659dbab0
+
+###

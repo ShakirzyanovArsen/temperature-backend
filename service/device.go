@@ -11,6 +11,7 @@ import (
 type DeviceService interface {
 	Register(deviceName string, userEmail string) (*model.Device, *Error)
 	GetList(token string) (view.DeviceListView, *Error)
+	GetDataList(token string, id int) (view.DeviceDataView, *Error)
 }
 
 type deviceServiceImpl struct {
