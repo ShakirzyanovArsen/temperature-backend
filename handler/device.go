@@ -31,7 +31,7 @@ func (h DeviceHandler) RegisterDevice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	resp := registerDeviceResponse{Token: newDevice.Token}
-	util.SetResponse(w, resp)
+	util.SetResponse(w, resp, http.StatusCreated)
 }
 
 func (h DeviceHandler) GetDeviceList(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +41,7 @@ func (h DeviceHandler) GetDeviceList(w http.ResponseWriter, r *http.Request) {
 		util.HandleServiceError(w, *e)
 		return
 	}
-	util.SetResponse(w, deviceListView)
+	util.SetResponse(w, deviceListView, http.StatusOK)
 }
 
 func NewDeviceHandler(service *service.DeviceService) DeviceHandler {

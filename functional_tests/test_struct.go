@@ -5,5 +5,6 @@ type TestStruct struct {
 	RequestBody        string
 	Headers            map[string]string
 	ExpectedStatusCode int
+	ExpectedResult     string
 	ExistsFields       []string
 }

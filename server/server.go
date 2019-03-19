@@ -14,6 +14,7 @@ func Setup() *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle("/user/register", m.Post(http.HandlerFunc(userHandler.RegisterUser)))
 	mux.Handle("/device/register", m.Post(http.HandlerFunc(deviceHandler.RegisterDevice)))
+	mux.Handle("/device/list", m.Get(m.Auth(http.HandlerFunc(deviceHandler.GetDeviceList))))
 	mux.Handle("/device/data", m.Post(m.Auth(http.HandlerFunc(deviceDataHandler.PushData))))
 	return mux
 }

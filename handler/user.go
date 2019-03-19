@@ -30,7 +30,7 @@ func (h UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	resp := registerUserResponse{Token: newUser.Token}
-	util.SetResponse(w, resp)
+	util.SetResponse(w, resp, http.StatusCreated)
 }
 
 func NewUserHandler(userService *service.UserService) UserHandler {

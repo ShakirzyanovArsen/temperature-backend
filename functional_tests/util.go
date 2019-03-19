@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"reflect"
 	"strings"
 	"temperature-backend/server"
 )
@@ -12,8 +13,9 @@ import (
 const createUserUrl = "http://localhost:8080/user/register"
 const registerDeviceUrl = "http://localhost:8080/device/register"
 const pushDataUrl = "http://localhost:8080/device/data"
+const getDeviceListUrl = "http://localhost:8080/device/list"
 
-type registerDeviceResp struct {
+type tokenResponse struct {
 	Token string `json:"token"`
 }
 
@@ -31,11 +33,14 @@ func checkFieldsExists(body []byte, fields []string) (string, error) {
 	return "", nil
 }
 
-func createUser(email string) error {
+func createUser(email string) (string, error) {
 	reader := strings.NewReader(fmt.Sprintf(`{"email": "%s"}`, email))
 	req, err := http.NewRequest(http.MethodPost, createUserUrl, reader)
-	_, err = http.DefaultClient.Do(req)
-	return err
+	res, err := http.DefaultClient.Do(req)
+	body, _ := ioutil.ReadAll(res.Body)
+	tokenResult := tokenResponse{}
+	err = json.Unmarshal(body, &tokenResult)
+	return tokenResult.Token, err
 }
 
 func registerDevice(userEmail string, deviceName string) (string, error) {
@@ -43,12 +48,33 @@ func registerDevice(userEmail string, deviceName string) (string, error) {
 	req, err := http.NewRequest(http.MethodPost, registerDeviceUrl, reader)
 	res, err := http.DefaultClient.Do(req)
 	body, _ := ioutil.ReadAll(res.Body)
-	tokenResult := registerDeviceResp{}
+	tokenResult := tokenResponse{}
 	err = json.Unmarshal(body, &tokenResult)
 	return tokenResult.Token, err
 }
 
-func setupServer() {
+func pushData(deviceToken string, dateTime string, temperature float64) error {
+	reader := strings.NewReader(fmt.Sprintf(`{"date_time": "%s", "temperature": %f}`, dateTime, temperature))
+	req, err := http.NewRequest(http.MethodPost, pushDataUrl, reader)
+	req.Header.Set("Authorization", deviceToken)
+	_, err = http.DefaultClient.Do(req)
+	return err
+}
+
+func JSONBytesEqual(a, b []byte) (bool, error) {
+	var j, j2 interface{}
+	if err := json.Unmarshal(a, &j); err != nil {
+		return false, err
+	}
+	if err := json.Unmarshal(b, &j2); err != nil {
+		return false, err
+	}
+	return reflect.DeepEqual(j2, j), nil
+}
+
+func setupServer() http.Server {
 	mux := server.Setup()
-	http.ListenAndServe(":8080", mux)
+	server := http.Server{Addr: ":8080", Handler: mux}
+	go server.ListenAndServe()
+	return server
 }

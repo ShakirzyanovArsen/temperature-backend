@@ -55,7 +55,10 @@ func (s deviceServiceImpl) GetList(token string) (view.DeviceListView, *Error) {
 	result := view.DeviceListView{Devices: []view.DeviceListItem{}}
 	for _, device := range devices {
 		data := (*s.deviceDataRepo).FindByDeviceID(device.Id)
-		dateTime := time.Unix(data[len(data)-1].Timestamp, 0).Format(time.RFC3339)
+		dateTime := ""
+		if len(data) != 0 {
+			dateTime = time.Unix(data[len(data)-1].Timestamp, 0).Format(time.RFC3339)
+		}
 		result.Devices = append(result.Devices, view.DeviceListItem{DeviceId: device.Id, DeviceName: device.Name, LastDataTime: dateTime})
 	}
 	return result, nil

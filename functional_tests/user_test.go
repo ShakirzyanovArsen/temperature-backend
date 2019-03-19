@@ -1,8 +1,10 @@
 package functional_tests
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 	"testing"
@@ -27,7 +29,13 @@ func TestRegisterUser(t *testing.T) {
 			ExistsFields:       []string{"code", "message"},
 		},
 	}
-	go setupServer()
+	srv := setupServer()
+	defer func() {
+		err := srv.Shutdown(context.TODO())
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 	for _, tt := range tests {
 		t.Run(tt.Name, func(t *testing.T) {
 			reader := strings.NewReader(tt.RequestBody)

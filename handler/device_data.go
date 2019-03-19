@@ -30,7 +30,7 @@ func (h DeviceDataHandler) PushData(w http.ResponseWriter, r *http.Request) {
 		util.HandleServiceError(w, *serviceError)
 		return
 	}
-	util.SetResponse(w, pushDataResponse{Saved: true})
+	util.SetResponse(w, pushDataResponse{Saved: true}, http.StatusCreated)
 }
 
 func NewDeviceDataHandler(service *service.DeviceDataService) DeviceDataHandler {
