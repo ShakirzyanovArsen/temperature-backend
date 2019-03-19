@@ -40,10 +40,23 @@ func Test_inMemoryDeviceRepo_findByUserId(t *testing.T) {
 	err := repo.Save(&device1)
 	err = repo.Save(&device2)
 	test_utils.UnexpectedError(t, err)
-	findedUser := repo.FindByUserId(1)
-	test_utils.AssertStruct(t, &model.Device{UserId: 1, Name: "device1", Token: "token"}, findedUser)
-	findedUser = repo.FindByUserId(2)
-	test_utils.AssertInt(t, 0, len(findedUser))
+	findedDevice := repo.FindByUserId(1)
+	test_utils.AssertStruct(t, &model.Device{UserId: 1, Name: "device1", Token: "token"}, findedDevice)
+	findedDevice = repo.FindByUserId(2)
+	test_utils.AssertInt(t, 0, len(findedDevice))
+}
+
+func Test_inMemoryDeviceRepo_findById(t *testing.T) {
+	repo := NewDeviceRepository().(inMemoryDeviceRepository)
+	device1 := model.Device{UserId: 1, Name: "device1", Token: "token1"}
+	device2 := model.Device{UserId: 2, Name: "device2", Token: "token2"}
+	err := repo.Save(&device1)
+	err = repo.Save(&device2)
+	test_utils.UnexpectedError(t, err)
+	findedDevice := repo.FindById(1)
+	test_utils.AssertStruct(t, &model.Device{Id: 1, UserId: 1, Name: "device1", Token: "token"}, findedDevice)
+	findedDevice = repo.FindById(100500)
+	test_utils.AssertStruct(t, nil, findedDevice)
 }
 
 func Test_inMemoryDeviceRepo_FindByToken(t *testing.T) {

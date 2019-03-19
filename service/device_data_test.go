@@ -40,8 +40,8 @@ func Test_deviceDataServiceImpl_Push(t *testing.T) {
 		temperature float64
 	}
 	validToken := "123"
-	successDeviceMock := createDeviceRepoMock(nil, nil, &model.Device{UserId: 1, Token: validToken})
-	deviceAuthFailedMock := createDeviceRepoMock(nil, nil, nil)
+	successDeviceMock := createDeviceRepoMock(nil, nil, &model.Device{UserId: 1, Token: validToken}, nil)
+	deviceAuthFailedMock := createDeviceRepoMock(nil, nil, nil, nil)
 	successDeviceDataMock := createDeviceDataRepoMock(nil, []model.DeviceData{})
 	saveFailedDeviceDataMock := createDeviceDataRepoMock(errors.New("error"), []model.DeviceData{})
 	tests := []struct {

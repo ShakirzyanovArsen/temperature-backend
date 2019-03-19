@@ -10,6 +10,7 @@ type DeviceRepository interface {
 	Save(device *model.Device) error
 	FindByUserId(userId int) []model.Device
 	FindByToken(token string) *model.Device
+	FindById(id int) *model.Device
 }
 
 type inMemoryDeviceRepository struct {
@@ -58,6 +59,15 @@ func (repo inMemoryDeviceRepository) FindByUserId(userId int) []model.Device {
 func (repo inMemoryDeviceRepository) FindByToken(token string) *model.Device {
 	for _, device := range *repo.devices {
 		if device.Token == token {
+			return device
+		}
+	}
+	return nil
+}
+
+func (repo inMemoryDeviceRepository) FindById(id int) *model.Device {
+	for _, device := range *repo.devices {
+		if device.Id == id {
 			return device
 		}
 	}

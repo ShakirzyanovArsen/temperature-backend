@@ -64,6 +64,25 @@ func (s deviceServiceImpl) GetList(token string) (view.DeviceListView, *Error) {
 	return result, nil
 }
 
+func (s deviceServiceImpl) GetDataList(token string, id int) (view.DeviceDataView, *Error) {
+	user := (*s.userRepo).FindByToken(token)
+	if user == nil {
+		msg := fmt.Sprintf("can't authorize user with token %s", token)
+		return view.DeviceDataView{}, &Error{Code: AuthError, Msg: msg}
+	}
+	device := (*s.deviceRepo).FindById(id)
+	if device == nil {
+		msg := fmt.Sprintf("can't find device with id %d", id)
+		return view.DeviceDataView{}, &Error{Code: AuthError, Msg: msg}
+	}
+	result := view.DeviceDataView{}
+	deviceData := (*s.deviceDataRepo).FindByDeviceID(device.Id)
+	for _, data := range deviceData {
+		dateTime := time.Unix(data.Timestamp, 0).Format(time.RFC3339)
+		result.Data = append(result.Data, view.DeviceDataItem{DateTime: dateTime, Temperature: data.Temperature})
+	}
+	return result, nil
+}
 func NewDeviceService(userRepo *repository.UserRepository, deviceRepo *repository.DeviceRepository, deviceDataRepo *repository.DeviceDataRepository) DeviceService {
 	return deviceServiceImpl{deviceRepo: deviceRepo, userRepo: userRepo, deviceDataRepo: deviceDataRepo, tokenGenerator: tokenGeneratorImpl{}}
 }
