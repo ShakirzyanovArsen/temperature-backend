@@ -8,28 +8,3 @@ before_install:
 
 script:
   - docker run temperature-backend-tests
-
-
-#sudo: false
-#
-#language: go
-#go_import_path: github.com/ShakirzyanovArsen/temperature-backend
-#env:
-#  - GO111MODULE=off
-#go:
-#  - 1.11.x
-#
-#notifications:
-#  email: false
-#
-#git:
-#  depth: 1
-#install: true
-#before_script:
-#  - cp -r $GOPATH/src/github.com/ShakirzyanovArsen/temperature-backend $GOPATH/src
-#
-#script:
-#  - cd $GOPATH/src/temperature-backend
-#  - go build
-#  - go test -v -short ./...
-
