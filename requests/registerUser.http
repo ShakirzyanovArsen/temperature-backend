@@ -4,8 +4,4 @@ Content-Type: application/json
 {
   "email": "{{user_email}}"
 }
-> {%
- client.global.set("user_token", response.body.token)
- %}
-
 ###

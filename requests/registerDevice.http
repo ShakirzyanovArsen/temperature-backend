@@ -6,8 +6,4 @@ Content-Type: application/json
   "user_email": "{{user_email}}"
 }
 
-> {%
- client.global.set("device_token", response.body.token)
- %}
-
 ###

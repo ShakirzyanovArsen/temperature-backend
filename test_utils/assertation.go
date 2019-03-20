@@ -1,6 +1,7 @@
 package test_utils
 
 import (
+	"math"
 	"reflect"
 	"testing"
 )
@@ -20,6 +21,11 @@ func AssertError(t *testing.T, err error) {
 func AssertString(t *testing.T, expected string, actual string) {
 	if expected != actual {
 		t.Errorf("expected string: %s, actual: %s", expected, actual)
+	}
+}
+func AssertFloat64(t *testing.T, expected float64, actual float64) {
+	if math.Mod(expected, actual) > 10e-6 {
+		t.Errorf("expected float64: %f , actual: %f (accuracy: 10e-6)", expected, actual)
 	}
 }
 func AssertInt(t *testing.T, expected int, actual int) {

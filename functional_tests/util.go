@@ -8,12 +8,14 @@ import (
 	"reflect"
 	"strings"
 	"temperature-backend/server"
+	"temperature-backend/view"
 )
 
 const createUserUrl = "http://localhost:8080/user/register"
 const registerDeviceUrl = "http://localhost:8080/device/register"
 const pushDataUrl = "http://localhost:8080/device/data"
 const getDeviceListUrl = "http://localhost:8080/device/list"
+const getDataListUrl = "http://localhost:8080/device/{id}"
 
 type tokenResponse struct {
 	Token string `json:"token"`
@@ -59,6 +61,17 @@ func pushData(deviceToken string, dateTime string, temperature float64) error {
 	req.Header.Set("Authorization", deviceToken)
 	_, err = http.DefaultClient.Do(req)
 	return err
+}
+
+func getDeviceList(userToken string) (view.DeviceListView, error) {
+	reader := strings.NewReader("")
+	req, err := http.NewRequest(http.MethodGet, getDeviceListUrl, reader)
+	req.Header.Set("Authorization", userToken)
+	res, err := http.DefaultClient.Do(req)
+	body, _ := ioutil.ReadAll(res.Body)
+	listView := view.DeviceListView{}
+	err = json.Unmarshal(body, &listView)
+	return listView, err
 }
 
 func JSONBytesEqual(a, b []byte) (bool, error) {
