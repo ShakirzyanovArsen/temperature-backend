@@ -1,0 +1,7 @@
+FROM golang:alpine
+RUN mkdir -p /go/src/temperature-backend
+WORKDIR /go/src/temperature-backend
+ADD . ./
+ENV CGO_ENABLED=0
+EXPOSE 8080
+CMD go test -v ./...

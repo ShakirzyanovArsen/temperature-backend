@@ -1,10 +1,8 @@
 package functional_tests
 
 import (
-	"context"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 	"testing"
@@ -16,13 +14,6 @@ func TestPushData(t *testing.T) {
 	}
 	url := pushDataUrl
 	existingUserEmail := "test@test.ru"
-	srv := setupServer()
-	defer func() {
-		err := srv.Shutdown(context.TODO())
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
 	_, err := createUser(existingUserEmail)
 	if err != nil {
 		t.Errorf("error while user create: %s", err)

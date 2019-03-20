@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
-	"reflect"
 	"strings"
 	"temperature-backend/server"
 	"temperature-backend/view"
+	"time"
 )
 
 const createUserUrl = "http://localhost:8080/user/register"
@@ -74,20 +75,15 @@ func getDeviceList(userToken string) (view.DeviceListView, error) {
 	return listView, err
 }
 
-func JSONBytesEqual(a, b []byte) (bool, error) {
-	var j, j2 interface{}
-	if err := json.Unmarshal(a, &j); err != nil {
-		return false, err
-	}
-	if err := json.Unmarshal(b, &j2); err != nil {
-		return false, err
-	}
-	return reflect.DeepEqual(j2, j), nil
-}
-
 func setupServer() http.Server {
 	mux := server.Setup()
-	server := http.Server{Addr: ":8080", Handler: mux}
-	go server.ListenAndServe()
-	return server
+	srv := http.Server{Addr: ":8080", Handler: mux}
+	time.Sleep(time.Second * 1)
+	go func() {
+		err := srv.ListenAndServe()
+		if err != nil {
+			log.Fatal(fmt.Sprintf("ListenAndServer(8080) falling: %s", err))
+		}
+	}()
+	return srv
 }

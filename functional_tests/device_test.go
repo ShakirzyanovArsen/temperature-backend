@@ -1,17 +1,14 @@
 package functional_tests
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 	"temperature-backend/test_utils"
 	"temperature-backend/view"
 	"testing"
-	"time"
 )
 
 func TestRegisterDevice(t *testing.T) {
@@ -34,13 +31,6 @@ func TestRegisterDevice(t *testing.T) {
 			ExistsFields:       []string{"code", "message"},
 		},
 	}
-	srv := setupServer()
-	defer func() {
-		err := srv.Shutdown(context.TODO())
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
 	_, err := createUser(existingUserEmail)
 	if err != nil {
 		t.Errorf("error while user create: %s", err)
@@ -73,14 +63,6 @@ func TestGetDeviceList(t *testing.T) {
 		t.Skip("Skipping test due to short mode")
 	}
 	url := getDeviceListUrl
-	srv := setupServer()
-	defer func() {
-		err := srv.Shutdown(context.Background())
-		if err != nil {
-			log.Fatal(err)
-		}
-		time.Sleep(time.Second)
-	}()
 	existingUserEmail := "list_test@test.ru"
 	validUserToken, err := createUser(existingUserEmail)
 	tests := []TestStruct{
@@ -126,14 +108,6 @@ func TestGetDataList(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping test due to short mode")
 	}
-	srv := setupServer()
-	defer func() {
-		err := srv.Shutdown(context.Background())
-		if err != nil {
-			log.Fatal(err)
-		}
-		time.Sleep(time.Second)
-	}()
 	url := getDataListUrl
 	existingUserEmail := "list_data_test@test.ru"
 	validUserToken, err := createUser(existingUserEmail)
